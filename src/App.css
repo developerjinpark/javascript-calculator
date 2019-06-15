@@ -1,31 +1,33 @@
 * {
-  margin:0;padding:0;
+  margin:0;padding:0;border:none;
 }
-
+@font-face {
+  font-family: 'digital';
+  src: url('./fonts/digital-7.ttf');
+}
 #calculator {
   width: 21rem;
   margin: 10vh auto 1rem;
   background-color: hsl(0, 0%, 0%);
-  color: hsl(0, 0%, 100%);
+  padding: 0.5rem;
 }
 
 #calculator p {
   text-align: right;
-  padding-right: 1rem;
-  padding-left: 1rem;
+  font-family: 'digital';
 }
 
 #displayInput {
   padding-top: 0.5rem;
   color: hsl(0, 60%, 60%);
-  height: 1.4rem;
   word-wrap: break-word;
+  height: 1.4rem;
 }
 
 #displayCurrent {
   padding-bottom: 0.2rem;
   color: hsl(0, 100%, 90%);
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 #keyPads {
@@ -36,11 +38,15 @@
   grid-gap: 0.2rem;
 }
 
+button {
+  font-size: 2rem;
+  color: hsl(0, 0%, 100%);
+}
+
 .grid {
   display: inline-grid;
   place-items: center;
   background-color: hsl(0, 0%, 15%);
-  font-size: 2rem;
 }
 
 .operator {
