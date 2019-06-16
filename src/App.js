@@ -37,18 +37,24 @@ class App extends React.Component {
     // console.log(this.state.result[this.state.result.length -1]);
     if ((/operator/).test(e.target.className)) {
       if (this.state.result !== '0') {
-        // console.log((/[+-/x]/).test(this.state.result[this.state.result.length - 1]));
-        if (!(/[+-/x]/).test(this.state.result[this.state.result.length - 1])) {
+        // console.log(e.target.value);
+        // console.log((/[+-/*x]/).test(e.target.value));
+        if (!(/[+-/*x]/).test(e.target.value)) {
           this.setState({
             input: this.state.input + e.target.value,
             result: this.state.result + e.target.value
           });
-        } else {
+        } else if (!(/[+-/*x]/).test(this.state.result[this.state.result.length - 1])) {
           // console.log('here, ' + this.state.input.slice(0, this.state.input.length - 1));
           this.setState({
-            input: this.state.input.slice(0, this.state.input.length - 1) + e.target.value.replace(/x/, '*'),
-            result: this.state.input.slice(0, this.state.input.length - 1) + e.target.value.replace(/x/, '*')
+            input: this.state.input + e.target.value.replace(/x/, '*'),
+            result: this.state.result + e.target.value.replace(/x/, '*')
           });
+        } else {
+          this.setState({
+            input: this.state.input.slice(0, this.state.input.length - 1) + e.target.value.replace(/x/, '*'),
+            result: this.state.result.slice(0, this.state.result.length - 1) + e.target.value.replace(/x/, '*')
+          })
         }
       }
     }
