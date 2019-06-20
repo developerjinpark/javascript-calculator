@@ -6,7 +6,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       input: '',
-      result: '0'
+      result: '0',
+      prevClicked: ''
     }
     this.handleClick = this.handleClick.bind(this);
   }
@@ -18,13 +19,19 @@ class App extends React.Component {
     if (e.target.id === 'clear') {
       this.setState({
         input: '',
-        result: '0'
+        result: '0',
+        prevClicked: 'clear'
       })
     }
 
     // handle to click a number button
     if ((/number/).test(e.target.className)) {
-      if (this.state.result !== '0') {
+      if (this.state.prevClicked === "equals") {
+        this.setState({
+          input: e.target.value,
+          result: e.target.value
+        });
+      } else if (this.state.result !== '0') {
         if ((/[+-/*]/).test(this.state.result)) {
           if (!this.state.result.includes('.')) {
             console.log('operator', this.state.result);
@@ -51,87 +58,145 @@ class App extends React.Component {
           result: e.target.value
         });
       }
+      this.setState({
+        prevClicked: 'number'
+      })
     }
     
     // console.log(this.state.result.length);
     // console.log(this.state.result[this.state.result.length -1]);
 
     // handle to click an operator button
-    if ((/operator/).test(e.target.className)) {
-      if (this.state.result !== '0') {
-        // console.log(e.target.value);
-        // console.log((/[+-/*x]/).test(e.target.value));
-        // if (!(/[+-/x]/).test(e.target.value)) {
-        //   this.setState({
-        //     input: this.state.input + e.target.value,
-        //     result: this.state.result + e.target.value
-        //   });
-        // } else 
-        if (!(/[+-/*]/).test(this.state.input[this.state.input.length - 1])) {
-          // console.log('here, ' + this.state.input.slice(0, this.state.input.length - 1));
-          this.setState({
-            input: this.state.input + e.target.value.replace(/x/, '*'),
-            result: e.target.value.replace(/x/, '*')
-          });
-        } else {
-          this.setState({
-            input: this.state.input.slice(0, this.state.input.length - 1) + e.target.value.replace(/x/, '*'),
-            result: e.target.value.replace(/x/, '*')
-          })
-        }
+    if ((/operator/).test(e.target.className) && this.state.result !== '0') {
+      if (this.state.prevClicked === 'equals') {
+        this.setState({
+          input: this.state.result
+        });
       }
+
+      // it needs to use something like promise or callback for step by step
+
+      if (!(/[+-/*]/).test(this.state.input[this.state.input.length - 1])) {
+        // console.log('here, ' + this.state.input.slice(0, this.state.input.length - 1));
+        this.setState({
+          input: this.state.input + e.target.value.replace(/x/, '*'),
+          result: e.target.value.replace(/x/, '*')
+        });
+      } else {
+        this.setState({
+          input: this.state.input.slice(0, this.state.input.length - 1) + e.target.value.replace(/x/, '*'),
+          result: e.target.value.replace(/x/, '*')
+        })
+      }
+      this.setState({
+        prevClicked: 'operator'
+      })
     }
 
     // handle to click a decimal button
-    if (e.target.id === 'decimal') {
-      if (this.state.result !== '0') {
-        console.log(this.state.input[this.state.input.length - 1]);
-        if (!(/\./g).test(this.state.result) && !(/[+-/*]/).test(this.state.input[this.state.input.length - 1])) {
-          console.log('it does not have a decimal, ' + this.state.result);
-          this.setState({
-            input: this.state.input + '.',
-            result: this.state.result + '.'
-          });
-        } else {
-          console.log('you are not allowed to put a decimal point');
-        }
+    if (e.target.id === 'decimal' && this.state.result !== '0') {
+      console.log(this.state.input[this.state.input.length - 1]);
+      if (!(/\./g).test(this.state.result) && !(/[+-/*]/).test(this.state.input[this.state.input.length - 1])) {
+        console.log('it does not have a decimal, ' + this.state.result);
+        this.setState({
+          input: this.state.input + '.',
+          result: this.state.result + '.'
+        });
+      } else {
+        console.log('you are not allowed to put a decimal point');
       }
+      this.setState({
+        prevClicked: 'decimal'
+      })
     }
 
-    // // handle to click an equal button
-    // if (e.target.id === 'equals') {
-    //   let input = this.state.input;
-    //   // console.log(formula.split(/\D/));
-    //   // console.log(formula.split(/\d+/));
-    //   let num = input.split(/\D/);
-    //   let op = input.split(/\d+/);
-    //   op.pop();
-    //   op.shift();
-    //   console.log('num: ' + num, 'op: ' + op);
-    //   let formula = [];
-    //   for (let i = 0; i < num.length; i++) {
-    //     formula.push(num[i]);
-    //     formula.push(op[i]);
-    //   }
-    //   console.log('formula: ' + formula);
+    // handle to click an equal button
+    if (e.target.id === 'equals') {
+      let input = this.state.input;
+      // console.log(formula1.split(/\D/));
+      // console.log(formula1.split(/\d+/));
+      let num = input.split(/\D/);
+      let op = input.split(/\d+/);
+      op.pop();
+      op.shift();
+      console.log('num: ' + num, 'op: ' + op);
+      let formula1 = [];
+      for (let i = 0; i < num.length; i++) {
+        formula1.push(num[i]);
+        if (i < op.length) {
+          formula1.push(op[i]);
+        }
+      }
+      console.log('formula1: ' + formula1);
 
-    //   if(formula.includes('.')) {
-    //     let index = formula.indexOf('.');
-    //     console.log('index: ' + index);
-    //     let decimal = formula[index - 1] + formula[index] + formula[index + 1];
-    //     let temp = formula.map( (f, index) => { 
-    //       if (f === '.') {
-    //         let t = formula[index-1] + formula[index] + formula[index+1];
-    //         temp.splice(index-1, 1);
-    //         formula.splice(index, 1);
-    //         return t;
-    //       } else {
-    //         return f;
-    //       }
-    //     });
-    //     console.log('formula: ' + temp);
-    //   }
-    // }
+      let indexes = [];
+      let formula2 = formula1.map( (f, index) => { 
+        if (f === '.') {
+          indexes.unshift(index);
+          return formula1[index-1] + formula1[index] + formula1[index+1];
+        } else {
+          return f;
+        }
+      });
+      console.log('formula1: ' + formula2);
+      console.log('indexes: ' + indexes);
+      indexes.forEach( i => {
+        formula2.splice(i+1, 1);
+        formula2.splice(i-1, 1);
+      });
+      console.log('formula2: ' + formula2);
+      let formula = formula2.map( (t, index) => {
+        if (index % 2 === 0) {
+          return parseFloat(t);
+        } else {
+          return t;
+        }
+      });
+      console.log('formula: ' + formula);
+
+      // handle to calculate for multiply and divide 
+      while (formula.includes('*') || formula.includes('/')) {
+        let idxOfMultiply = formula.indexOf('*');
+        let idxOfDivide = formula.indexOf('/');
+        console.log(idxOfMultiply, idxOfDivide);
+        if (idxOfMultiply !== -1 && idxOfDivide !== -1) {
+          if (idxOfMultiply < idxOfDivide) {
+            formula[idxOfMultiply - 1] *= formula[idxOfMultiply + 1];
+            formula.splice(idxOfMultiply, 2);
+          } else {
+            formula[idxOfDivide - 1] /= formula[idxOfDivide + 1];
+            formula.splice(idxOfDivide, 2);
+          }
+        } else if (idxOfMultiply === -1) {
+          formula[idxOfDivide - 1] /= formula[idxOfDivide + 1];
+            formula.splice(idxOfDivide, 2);
+        } else {
+          formula[idxOfMultiply - 1] *= formula[idxOfMultiply + 1];
+            formula.splice(idxOfMultiply, 2);
+        }
+      }
+
+      // handle to calculate for add and subtract 
+      while (formula.includes('+') || formula.includes('-')) {
+        if (formula.includes('+')) {
+          let idxOfAdd = formula.indexOf('+');
+          formula[idxOfAdd - 1] *= formula[idxOfAdd + 1];
+          formula.splice(idxOfAdd, 2);
+        } else {
+          let idxOfSubtract = formula.indexOf('-');
+          formula[idxOfSubtract - 1] /= formula[idxOfSubtract + 1];
+          formula.splice(idxOfSubtract, 2);
+        }
+      }
+      console.log('formula: ' + formula);
+
+
+      this.setState({
+        input: this.state.input + '=' + formula,
+        result: formula,
+        prevClicked: 'equals'
+      });
+    }
   }
 
   render() {
