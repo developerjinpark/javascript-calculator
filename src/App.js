@@ -21,7 +21,7 @@ class App extends React.Component {
         input: '',
         result: '0',
         prevClicked: 'clear'
-      })
+      });
     }
 
     // handle to click a number button
@@ -43,7 +43,7 @@ class App extends React.Component {
             this.setState({
               input: this.state.input + e.target.value,
               result: this.state.result + e.target.value
-            })
+            });
           }
         } else {
           console.log('not operator');
@@ -60,7 +60,7 @@ class App extends React.Component {
       }
       this.setState({
         prevClicked: 'number'
-      })
+      });
     }
     
     // console.log(this.state.result.length);
@@ -108,7 +108,7 @@ class App extends React.Component {
       }
       this.setState({
         prevClicked: 'decimal'
-      })
+      });
     }
 
     // handle to click an equal button

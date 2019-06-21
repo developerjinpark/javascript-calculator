@@ -46,3 +46,30 @@ EXAMPLE: `3 + 5 x 6 - 2 / 4 =`
 - Formula/Expression Logic: `32.5`
 
 You can build your project by forking this CodePen pen. Or you can use this CDN link to run the tests in any environment you like: `https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js`
+
+**Notes:**
+
+Adding Fonts: using `@font-face`
+
+- Download fonts file to src/fonts
+
+- On App.css
+
+```css
+@font-face {
+  font-family: 'digital';
+  src: url('./fonts/digital-7.ttf');
+}
+
+#calculator p {
+  font-family: 'digital';
+}
+```
+
+Regular expression for operator
+
+- `(/[+-*/]/).test(this.state.result)`
+
+- However, it's included a period.
+
+- So, I used it with `!(/\./).test(this.state.result)`
