@@ -66,31 +66,32 @@ class App extends React.Component {
     // console.log(this.state.result.length);
     // console.log(this.state.result[this.state.result.length -1]);
 
+    
     // handle to click an operator button
     if ((/operator/).test(e.target.className) && this.state.result !== '0') {
-      if (this.state.prevClicked === 'equals') {
-        this.setState({
-          input: this.state.result
-        });
-      }
-
-      // it needs to use something like promise or callback for step by step
-
-      if (!(/[+-/*]/).test(this.state.input[this.state.input.length - 1])) {
+      
+      if (!(/[+-/*]/).test(this.state.result) || (/\./).test(this.state.result)) {
         // console.log('here, ' + this.state.input.slice(0, this.state.input.length - 1));
-        this.setState({
-          input: this.state.input + e.target.value.replace(/x/, '*'),
-          result: e.target.value.replace(/x/, '*')
-        });
+        if (this.state.prevClicked === 'equals') {
+          this.setState({
+            input: this.state.result +e.target.value.replace(/x/, '*'),
+            result: e.target.value.replace(/x/, '*')
+          });
+        } else {
+          this.setState({
+            input: this.state.input + e.target.value.replace(/x/, '*'),
+            result: e.target.value.replace(/x/, '*')
+          });
+        }
       } else {
         this.setState({
           input: this.state.input.slice(0, this.state.input.length - 1) + e.target.value.replace(/x/, '*'),
           result: e.target.value.replace(/x/, '*')
-        })
+        });
       }
       this.setState({
         prevClicked: 'operator'
-      })
+      });
     }
 
     // handle to click a decimal button
@@ -178,18 +179,26 @@ class App extends React.Component {
 
       // handle to calculate for add and subtract 
       while (formula.includes('+') || formula.includes('-')) {
-        if (formula.includes('+')) {
-          let idxOfAdd = formula.indexOf('+');
-          formula[idxOfAdd - 1] *= formula[idxOfAdd + 1];
-          formula.splice(idxOfAdd, 2);
+        let idxOfAdd = formula.indexOf('+');
+        let idxOfSubtract = formula.indexOf('-');
+        console.log(idxOfAdd, idxOfSubtract);
+        if (idxOfAdd !== -1 && idxOfSubtract !== -1) {
+          if (idxOfAdd < idxOfSubtract) {
+            formula[idxOfAdd - 1] += formula[idxOfAdd + 1];
+            formula.splice(idxOfAdd, 2);
+          } else {
+            formula[idxOfSubtract - 1] -= formula[idxOfSubtract + 1];
+            formula.splice(idxOfSubtract, 2);
+          }
+        } else if (idxOfAdd === -1) {
+          formula[idxOfSubtract - 1] -= formula[idxOfSubtract + 1];
+            formula.splice(idxOfSubtract, 2);
         } else {
-          let idxOfSubtract = formula.indexOf('-');
-          formula[idxOfSubtract - 1] /= formula[idxOfSubtract + 1];
-          formula.splice(idxOfSubtract, 2);
+          formula[idxOfAdd - 1] += formula[idxOfAdd + 1];
+            formula.splice(idxOfAdd, 2);
         }
       }
       console.log('formula: ' + formula);
-
 
       this.setState({
         input: this.state.input + '=' + formula,
@@ -203,9 +212,9 @@ class App extends React.Component {
     return (
       <div id="container">
         <div id="calculator">
-          <div id="display">
+          <div id="displayWarp">
             <p id="displayInput">{this.state.input}</p>
-            <p id="displayCurrent">{this.state.result}</p>
+            <p id="display">{this.state.result}</p>
           </div>
           <div id="keyPads">
             <button id="clear" className="grid" onClick={this.handleClick}>AC</button>
