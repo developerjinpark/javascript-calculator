@@ -7,9 +7,13 @@
   src: url('./fonts/digital-7.ttf');
 }
 
+#container {
+  margin-top: 12vh;
+  text-align: center; 
+}
 #calculator {
   width: 21rem;
-  margin: 15vh auto 1rem;
+  margin: 1rem auto;
   background-color: hsl(0, 0%, 0%);
   padding: 0.5rem;
 }

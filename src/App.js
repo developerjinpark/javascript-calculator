@@ -211,6 +211,9 @@ class App extends React.Component {
   render() {
     return (
       <div id="container">
+        <header>
+          <h1>Calculator</h1>
+        </header>
         <div id="calculator">
           <div id="displayWarp">
             <p id="displayInput">{this.state.input}</p>
